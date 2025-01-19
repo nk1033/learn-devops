@@ -1,2 +1,1 @@
-# learn-devops
-A portfolio website listing free courses and testimonials
+This repository is empty. Any task executed on it should be considered a new capability and needs to be created.
