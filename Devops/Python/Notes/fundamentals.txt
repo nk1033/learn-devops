@@ -184,7 +184,6 @@ GIthub-jira integration
 ***********************
 create a jira account and create API token - 
 
-ATATT3xFfGF0IdyCOPo2ac4hr4gmEj2A4s6AlZibHFxKpwJ3sSpsWx8wnzOHMhLEdTOy-pyPaIRry9J5WHrTMz4PNzFD2cvKW0CCmFkttHUJ03p023nQaNNNwEeivaS_aLTvP6c573U5Zzlw9tHWSwCJOHSWz230znL3-FYueWGZP1VjW0qCUnw=ADCD0D09
 
 will use flask framework for the python application API 
 
