@@ -1,0 +1,203 @@
+scenario1: - we have multiple vpc's around 100 vpc's how to establish a communication between them.
+
+by using Network connectivity center and hub and spoke models we can achive this.
+
+NCC is similar to transist gateway in aws .
+
+1) what is gcp armor and WAF ?
+
+In Google Cloud Platform (GCP), Cloud Armor is Google's comprehensive edge network security service that includes Web Application Firewall (WAF) capabilities. It's designed to protect your applications and websites from various threats, particularly Distributed Denial-of-Service (DDoS) attacks and common web application vulnerabilities.
+
+A Web Application Firewall (WAF) is a security solution that monitors, filters, and blocks malicious HTTP/S traffic to and from a web application. It acts as a shield between your web application and the internet, protecting it from common web-based attacks.
+
+Cloud armor helps you protect your google cloud deployments from multiple types of threats, including
+
+1) Ddos - distributed denial-of-service
+2) cross site scripting ( XSS)
+3) sql injection (SQLi)
+
+if you want to enable cloud armor your application should be behind the load balancer.
+
+policies , adaptive protection & managed protection .
+
+
+2) what is cloud AI ?
+
+"Cloud AI" refers to the integration of Artificial Intelligence (AI) capabilities and services within cloud computing platforms. Essentially, it's about making AI tools, algorithms, and pre-trained models accessible, scalable, and cost-effective for individuals and businesses through the internet.
+
+Key Aspects of Cloud AI:
+AI as a Service (AIaaS): This is a common term for Cloud AI services. It means that AI functionalities are offered as ready-to-use services, often via APIs (Application Programming Interfaces) or SDKs (Software Development Kits). This significantly lowers the barrier to entry for adopting AI, as you don't need deep AI expertise or massive upfront investments.
+
+
+1. Google Cloud Platform (GCP)
+Google has a long history and deep expertise in AI research, which is heavily reflected in its cloud offerings.
+
+Vertex AI: This is Google Cloud's unified platform for the entire machine learning lifecycle. It provides tools for data preparation, model training (including AutoML for low-code/no-code ML), deployment, and monitoring.
+
+Generative AI on Vertex AI: Access to Google's powerful foundation models like Gemini, PaLM 2, Imagen (for image generation), and Codey (for code generation).
+
+Pre-trained APIs (Google Cloud AI Services):
+
+Vision AI: Image analysis, object detection, facial recognition.
+
+Natural Language AI: Text analysis, sentiment analysis, entity extraction, content classification.
+
+Speech-to-Text & Text-to-Speech: Convert audio to text and vice-versa.
+
+Translation AI: Language translation.
+
+Video AI: Video content analysis.
+
+Recommendation AI: Build personalized recommendation systems.
+
+Cloud TPUs: Custom-designed hardware accelerators optimized for deep learning workloads, offering significant performance for training large models.
+
+
+3) What is kafka?
+A) Apache kafka is a distributed event streaming platform that is used for building real time data pipelines and streaming applications.
+
+
+
+kafka is a Real time Processing with Stream API . The stream API allows you to create real-time apps by continuously transforming and analyzing incoming data streams.
+
+kafka streams API is a librabry you embed in your app to perform stream processing.
+
+example : - driver location updates in uber or other platforms.
+sales updates in e-commerce 
+
+
+kafka port is 9092
+
+Producers are nothing but some one the services that produce the events to the topic.
+Once the data is lands to the topic the other data consumes and produce some other relatable results.
+
+Kafka Broker - The foundation of message storage
+A kafka broker stores and manages messages in a cluster.
+
+message management - Brokers handle storing , retrieving and distributing messages.
+
+clusternode - Each broker is a node in the kafka cluster
+
+scalability - Brokers enable horizonal scalling by distributing data across nodes.
+fault tolerance - redundancy ensures message durability during broker failures.
+Brokers can join or leave the clusters without downtime.
+
+Understanding Kafka Topics
+*************************
+brokers will store all data 
+A topic organizes and categorizes kafka messages.
+
+messages in a topic are stored sequenctialy 
+Multiple consumers can read from the same topic. - all consumers will pull the data based on the position.
+
+Producers and consumers interact through topics, not directly.
+
+Repication : - Topics ensures data availability with replication across brokers.
+
+retention : this config is to ensure how long the data should be available 
+
+
+High availability of kafka using replication and partitions 
+***********************************************************
+
+Distribution : -  Partitioning distributes a topic's data across multiple brokers in a kafka cluster.
+parallelisim : -  partitions enable parallel processing of messages by consumers increasing throughput.
+
+
+The Creation Process
+When you create a topic (e.g., my_topic) with a certain number of partitions (e.g., 6) and a replication factor (e.g., 3), the following happens:
+
+Partition Distribution: The 6 partitions of my_topic are distributed and created across the 3 brokers in your cluster. Kafka's controller broker handles this distribution, ensuring the partitions are spread out as evenly as possible.
+
+Replication: The replication factor of 3 means that each partition has three copies (replicas). One of these is designated as the leader, and the others are followers. All writes and reads for a given partition go through its leader. The followers asynchronously replicate the data from the leader.
+
+commands to create topic , partitions and replicas 
+****************************************************
+
+cd /root/kafka/bin ---- shell script of kafka will be placed in this folder.
+
+./kafka-topics.sh --create --topic demo_topic --bootstrap-server localhost:9092
+
+create a topic with partition and replication
+
+./kafka-topics.sh --create --topic demo_topic1 --partitions 3 --replication-factor 3 --bootstrap-server localhost:9092
+
+default partition is 1 
+
+to read the configuration of topic 
+
+./kafka-topics.sh --describe --topic demo_topic1 --bootstrap-server localhost:9092
+
+In Kafka, ISR stands for "In-Sync Replicas." It's a critical concept for ensuring data durability and high availability.
+
+Each partition in a Kafka topic has one replica designated as the leader, which handles all read and write requests. The other replicas are followers. The ISR is a dynamic set that includes the leader and all followers that have fully caught up with the leader's data.
+
+The ISR is important for two main reasons:
+
+Data Safety: A message is only considered "committed" when all replicas in the ISR have successfully replicated it. This prevents data loss if the leader fails, because another replica in the ISR will have a complete copy of the data.
+
+Fault Tolerance: When a leader broker fails, Kafka will elect a new leader from the replicas currently in the ISR. This ensures that the new leader has the most up-to-date data, minimizing any potential data loss.
+
+if any broker is out of syc , to fix that you need to reassighn the partion.
+
+Create test.json
+
+{
+  "version": 1,
+  "partitions": [
+    {
+      "topic": "my-topic",
+      "partition": 1,
+      "replicas": [
+        102,
+        103,
+        101
+      ]
+    }
+  ]
+}
+
+execute below command 
+
+bin/kafka-reassign-partitions.sh --bootstrap-server localhost:9092 --reassignment-json-file test.json --execute
+
+To change retention config to the topic 
+
+./kafka-config.sh --bootstrap-server localhost:9092 --entity-type topics --entity-name demo_topic1 --alter --add-config retention.ms=17564335
+
+to list numbers of brokers and topics 
+
+bin/kafka-topics.sh --list --bootstrap-server <broker-address:port>
+
+bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092
+
+
+zookeeper:
+**********
+
+Based on your previous queries about Kafka, ZooKeeper is an essential component for older Kafka versions (before Kafka 3.x with KRaft).
+
+ZooKeeper is a centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services. In the context of Kafka, it serves as the cluster's "source of truth."
+
+Here's a breakdown of its primary roles:
+
+Controller Election: ZooKeeper is used to elect the Kafka cluster controller, which is responsible for managing the state of partitions and replicas.
+
+Broker Registration: Every Kafka broker registers itself with ZooKeeper, allowing the controller and other brokers to know which brokers are currently available.
+
+Topic and Partition Metadata: It stores critical metadata about topics, partitions, and their replicas, including which broker is the leader for each partition and the current members of the In-Sync Replica (ISR) set.
+
+ACLs and Quotas: ZooKeeper is also the default location for storing Access Control Lists (ACLs) and other security-related configurations.
+
+For authentication and authorization
+*************************************
+
+Edit server.properties: On each Kafka broker, you must edit the config/server.properties file to define a listener that requires authentication. For example, to enable SASL/PLAIN (username/password authentication), you'd add or modify the listeners and sasl.enabled.mechanisms properties.
+
+
+to grant ACL permissions for authorization 
+******************************************
+
+bin/kafka-acls.sh --authorizer-properties zookeeper.connect=localhost:2181 --add --allow-principal User:alice --producer --topic my-secure-topic
+
+bin/kafka-acls.sh --authorizer-properties zookeeper.connect=localhost:2181 --list --topic my-secure-topic

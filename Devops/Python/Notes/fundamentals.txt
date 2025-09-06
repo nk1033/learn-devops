@@ -1,0 +1,201 @@
+comparision operators:
+**********************
+10 > 3
+10 == 3
+10 >= 3
+10 != 3
+
+"big" > "BIG"
+print(ord(b))
+
+
+identity operators -- boolion operators 
+
+a is b   -- print true or false 
+
+a is not b --- print true or false 
+
+logical operation == AND OR NOT 
+
+relational operators 
+
+== != >= <= > < 
+
+
+
+conditional statements: if elif else 
+***********************
+## for loops  -- if we want to run multiple times fixed number
+while -- when we not sure about the number of execution and it depends on the condition based on user input.
+
+loops --it is a repetative execution of block of code.
+
+for number in range(3):
+  print("Attempt")
+
+for i in range(10):
+    print("Naresh")
+
+loops are 2 types 
+
+1) for loop   ---- syntax ---- for i in sequence ( range, list, tupple )
+2) while loop --- 
+
+loop manipulation :---
+
+break
+continue 
+
+numbers = [1,2,3,4,5,6]
+
+for i in numbers:
+   if i == 3 :
+   break
+   print(i)
+
+
+for i in numbers:
+   if i == 3 :
+   continue
+   print(i)
+
+
+
+How to create a functions:
+**************************
+function we can create use def keywork along with function name and paranthasis 
+
+def greet():
+
+there are 2 types of functions.
+
+1) perform a task 
+2) return a value 
+
+print / return - print will just disply the output and return will use to send the message to a file or send email then will use return.
+
+
+Variables:
+*********
+we have 2 types of variables, - 1. global variables 2.local variables 
+
+if you are defining the variable within the function then it is local scope variables, if you are defining the variable outside the function then it is Global scope variables.
+
+functions & moddules & packages
+********************************
+
+import calculator_new as basic_calc
+
+basci_calc.addition()
+
+if we have a code in calculator_new.py with addition() , sub() , multiplication() functions. you can use that as a moddule and re-use to other programe using import.
+
+module is used for re-useablity , it is a collection of functions.
+
+Use import , to pull module in our code 
+use from , to pull a specific function from a module to our code. 
+
+
+functions, take inputs perform the tasks and return the output.
+
+packages is nothing but collection of modules .
+
+we have pre-defined modules 
+
+aws -- boto3
+github --- github
+jira --- jira 
+
+http --- requests .
+
+PYPI -- python package index --- this is the place where our packages / modules are hosted.
+
+to install these packages use pip 
+
+pip install boto3 
+pip install requests .
+
+virtiual environment 
+********************
+
+it will do a logical seperation on your virtual machines for the python packages.
+it is required if you want different python versions for multiple projects.
+
+pip install virtualenv.  - to install
+
+python -m venv project-abc  - to create
+
+source project-abc/bin/activiate  - to activiate 
+
+deactiviate -- to deactiviate
+
+
+Environment Variables & command line arguments 
+***********************************************
+
+sys.argv[1]
+sys.argv[2]
+
+python basic-cal.py 2 3 
+
+by default arguments read as strings 
+we need to convert them as integers.
+
+num1 = int(sys.argv[1])
+operation = sys.argv[2]
+
+
+
+if operation == "add":
+   output = add(num1 , num2) 
+   print(output)
+
+
+environment variables : to add sensitive data 
+
+export passoword ="Naresh"
+import os 
+
+print(os.getenv("Password))
+
+
+dictionaries:
+**************
+it will store data as key value pairs, it is like a properties .
+
+my_data = [{
+  "name" = "Naresh",
+  "age" = "20",
+  "city" = "hyderabad"
+}]
+
+
+we can print a specific value by using index and key 
+
+print(my_data[age])
+
+if we have multiple dictionaries
+
+print(my_data[1][city])
+
+
+
+GIthub-jira integration
+***********************
+create a jira account and create API token - 
+
+ATATT3xFfGF0IdyCOPo2ac4hr4gmEj2A4s6AlZibHFxKpwJ3sSpsWx8wnzOHMhLEdTOy-pyPaIRry9J5WHrTMz4PNzFD2cvKW0CCmFkttHUJ03p023nQaNNNwEeivaS_aLTvP6c573U5Zzlw9tHWSwCJOHSWz230znL3-FYueWGZP1VjW0qCUnw=ADCD0D09
+
+will use flask framework for the python application API 
+
+in API - will use 4 request types 
+
+POST - to add a entry 
+GET - to fetch details of a entry
+PUT -  to modify an entry 
+DEL -  to delete an entry 
+
+
+
+
+

@@ -1,0 +1,22 @@
+-- > add labels to the resource to find which team is consuming more cost.
+-- > and see gcp's pricing calculator / cloud asset inventory to verify how much it cost per usage.
+--- > take advantage of discounts ( sud's - sustained use discounts - offer applied autometically for compute and gke, cud's - commmited use discounts - contract for 1-3 years )
+
+1) optimize your compute resource 
+  - right sizing
+  - enable autoscaling
+  - leverage premittible / spot instances
+2) Manage storage and Data transfer
+   - choose correct storage class based on your usage.
+        * standard -- for frequet access
+        * coldline / nearline -- for in-frequent less than 1 month or quarter 
+        * archive - for more than one year 
+   -  implement lifecycle policies, to delete old files or transfer storage class
+   - Minimize data eggress, data transfer within regions or from gcp to internet will cost more.
+
+3) Implement financial governance 
+   - Set budgets and alerts
+4) Architecture and CICD integration.
+   - use tools like terraform / argocd to revert manaual changes.
+   - integrate kubenrets / docker as a jenkins agents 
+   - use server less services like cloud app engine / cloud run / cloud functions 

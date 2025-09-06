@@ -1,0 +1,8 @@
+Prisma is an Open Source ORM ( Object Relational Mapping ) tool for nodejs & typescript that simplifies database interaction.
+
+It helps you interact with database using a type-safe query builder and eliminates the need to write a raw sql queries.
+
+Prisma Provides a Prisma Client, A power full auto generated query builder and Prisma migrator for database schema migrations.
+
+Prisma Studio - Modern UI to view and edit your application data.
+

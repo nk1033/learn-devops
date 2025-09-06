@@ -1,0 +1,169 @@
+API Gateway
+***********
+An API (Application Programming Interface) gateway is a crucial component in modern software architecture, particularly in microservices-based systems. It acts as a single entry point for all client requests, sitting between the clients and the backend services. Think of it as a "front door" to your application's various functionalities.
+
+
+How an API Gateway is Used:
+
+The API gateway handles incoming requests from clients (which could be web applications, mobile apps, or other services) and then performs several key functions before routing them to the appropriate backend service:
+
+Request Routing: The gateway determines which backend service is best suited to handle a specific client request. This routing can be based on various factors like the URL path, headers, or even the content of the request. For example, a request to /users might be routed to a user management service, while a request to /products goes to a product catalog service.
+
+Protocol Translation: Sometimes, different clients and backend services might use different communication protocols. The API gateway can bridge this gap by translating protocols. For instance, it might receive an HTTP request from a web browser and translate it into a gRPC call for an internal microservice. Similarly, it can translate the response back to the client's expected format.
+
+
+
+Request Aggregation: A single client request might require data from multiple backend services. The API gateway can handle this by making requests to several services, aggregating the responses, and then sending a single, unified response back to the client. This reduces the number of round trips the client needs to make, improving performance and simplifying the client-side logic. Imagine a product details page that needs information about the product itself, its inventory, and customer reviews – the gateway can fetch all this data and combine it.
+Authentication and Authorization: Security is a primary concern. The API gateway can handle authentication (verifying the identity of the client) and authorization (ensuring the client has permission to access the requested resource). This centralizes security concerns, so individual backend services don't need to implement their own authentication and authorization mechanisms. It can validate API keys, JWT (JSON Web Tokens), or integrate with other identity providers.
+
+
+Rate Limiting and Throttling: To protect backend services from being overwhelmed by excessive requests, the API gateway can implement rate limiting (restricting the number of requests a client can make within a specific time period) and throttling (slowing down requests when limits are reached). This helps ensure fair usage and prevents denial-of-service attacks.
+
+Caching: For frequently accessed data, the API gateway can implement caching. By storing responses to common requests, it can serve these responses directly without forwarding the request to the backend service, thus reducing latency and improving performance.
+
+Monitoring and Logging: API gateways often provide capabilities for monitoring API traffic, logging requests and responses, and collecting metrics on performance and errors. This data is invaluable for gaining insights into API usage, troubleshooting issues, and making informed decisions about scaling and optimization.
+
+Request and Response Transformation: The gateway can modify the request or response payloads as they pass through. This could involve data format conversions (e.g., JSON to XML), data enrichment, or filtering out sensitive information before it reaches the client.
+
+Load Balancing: In some deployment scenarios, especially when multiple instances of a backend service are running, the API gateway can act as a load balancer, distributing incoming requests evenly across these instances to ensure no single instance is overwhelmed and to improve the overall availability and resilienc
+
+************************************************************************************************************************************
+
+Cloud run
+*********
+Cloud Run in Google Cloud Platform (GCP) is a fully managed serverless compute platform that enables you to run stateless containers that are invoked via HTTP requests or Pub/Sub events. It abstracts away all the underlying infrastructure management, allowing you to focus solely on building and deploying your applications.
+
+
+Think of it as a way to run your containerized applications without having to worry about provisioning, configuring, or managing servers. Google handles all the scaling, networking, and infrastructure for you.
+
+Key Concepts:
+
+Containers: Cloud Run runs Docker or OCI-compatible containers. This means you can package your application and its dependencies into a portable image and run it on Cloud Run.
+Stateless: Cloud Run is designed for stateless applications. This means that any data that needs to be persistent should be stored in external services like Cloud SQL, Cloud Firestore, or Cloud Storage.
+Services: A Cloud Run service is a long-running application that responds to HTTP requests or events. You define the container image to run, and Cloud Run manages its instances, scaling them automatically based on traffic.
+Jobs: Cloud Run Jobs allow you to run finite, task-based workloads. You define a container that performs a specific job, and Cloud Run executes it. Jobs are ideal for batch processing, data transformations, and other one-off or scheduled tasks.
+Revisions: Every time you deploy a change to a Cloud Run service, a new immutable revision is created. This allows for easy rollbacks and traffic splitting between different versions of your application.
+
+**************************************************************************************************************************
+
+Google Cloud Key Management Service (KMS)
+
+Cloud KMS is a service that allows you to manage encryption keys in Google Cloud.  It lets you create, use, and manage cryptographic keys and perform cryptographic operations.
+
+How KMS Works
+
+KMS provides a centralized way to manage your encryption keys.  Instead of you having to store and manage keys yourself, KMS does it for you, securely.  You can then use these keys to encrypt data in various Google Cloud services.
+
+Key capabilities and features:
+
+Centralized Key Management: Manage symmetric and asymmetric cryptographic keys.
+
+Hardware Security Modules (HSMs): Optionally, you can use HSMs to store your keys, providing a higher level of security.
+
+Envelope Encryption: KMS is often used for envelope encryption. In this process, KMS encrypts a data encryption key (DEK), and the DEK is used to encrypt the actual data.
+
+Integration with Google Cloud Services: KMS integrates with many other Google Cloud services, such as:
+
+Cloud Storage: Encrypt data stored in buckets.
+
+BigQuery: Encrypt data stored in datasets and tables.
+
+Compute Engine: Encrypt persistent disks.
+
+***************************************************************************************
+
+Apache SkyWalking
+
+Apache SkyWalking is an open-source application performance monitoring (APM) system designed for microservices, cloud-native, and container-based architectures. It provides a comprehensive solution for observability, offering features like distributed tracing, metrics monitoring, and logging.
+
+**********************************************************************************
+
+scenario : you have vpc1 & vpc2 , from vpc1 you are able to access storage , but from vpc2 you are not able to access storage.
+
+options to fix:
+
+1) iam access
+2) vpc peering
+4) private google access - it should enable at subnet lelvel , internal ip should communicate with the resouce api's
+5) vpc service controlls -  it creates security perimeters around your resources, it have ingress & egress rule to restrict the access. it has two modes enforce & dry-run mode.
+
+scenario1: how to copy file from one storage bucket to another storage bucket.
+
+using gstil by configuring gcp & aws authentication and providing command like
+
+gsutil cp gs://gcp=bucket s3://aws-bucket 
+
+1) google cloud storage transfer service 
+step1: - grant google storage transfer service ( which uses a google managed service account) - the necessary iam permissions to read aws s3 bucket.
+step2: - create a transfer job 
+
+source - aws bucket
+destination - gcp bucket
+authentication - provide aws access key & secret key or ARN for the aws iam role which you created.
+
+2) aws data sync ( recommended for gcp to aws )
+
+scenario3 : - 
+
+we have remote backend configured for terraform gcs . noticed current state file file version is not correct.
+is it possible to point the state file to a specific version?
+
+A ) we con't directly specify the state file version in backend.
+
+terraform {
+  backend "gcs" {
+    bucket = "your-gcs-terraform-state-bucket" # 💡 Must be globally unique
+    prefix = "environment/project/" # Optional: Prefix for state files within the bucket
+    # credentials = "/path/to/your/service-account-key.json" # Optional: Path to service account key file
+  }
+}
+
+
+scenario3 : - create a streaming job starting from pubsub to load data into bq through dataflow job by using terraform script?
+
+step1 : - create storage bucket, pubsub topic & subscription , bigquerry datasets & tables and bq scgema config 
+step2 : - create dataflow service account and grant access to the resources.
+step3 : - create a dataflow job 
+
+# Deploy the Dataflow job using the "Cloud Pub/Sub to BigQuery" template
+resource "google_dataflow_job" "pubsub_to_bq_job" {
+  name              = var.dataflow_job_name
+  project           = var.gcp_project_id
+  region            = var.gcp_region
+  temp_gcs_location = "gs://${google_storage_bucket.dataflow_staging_bucket.name}/temp"
+  template_gcs_path = "gs://dataflow-templates/${var.gcp_region}/Cloud_PubSub_to_BigQuery" # Use the official template path
+
+  parameters = {
+    inputTopic    = google_pubsub_topic.input_topic.id
+    outputTableSpec = "${var.gcp_project_id}:${google_bigquery_dataset.output_dataset.dataset_id}.${google_bigquery_table.output_table.table_id}"
+    # Add other parameters if you need them, e.g., for UDFs or dead-lettering:
+    # javascriptTextTransformGcsPath = "gs://${google_storage_bucket.dataflow_staging_bucket.name}/udf/transform.js"
+    # javascriptTextTransformFunctionName = "transform"
+    # outputDeadletterTopic = google_pubsub_topic.dead_letter_topic.id
+  }
+
+  # Set the service account for the Dataflow job
+  service_account_email = google_service_account.dataflow_sa.email
+
+  # Set the job type to STREAMING for continuous processing
+  on_delete = "drain" # Recommended for streaming jobs to drain gracefully on delete
+  type = "STREAMING"
+}
+
+***************
+
+Confluent Cloud on Google Cloud Platform, which is a fully-managed, cloud-native data streaming platform built by Confluent, the creators of Apache Kafka.  It's essentially an enterprise-ready version of Kafka that's optimized to run on GCP
+
+It also offers over 120 pre-built connectors to easily stream data to and from GCP services like BigQuery, Cloud Storage (GCS), and Cloud Functions.
+
+you can create API key for the authentication to confluent cloud clusters and authorization use ACL.
+You don't need any zookeeper for this setup. it is a managed service.
+
+
+so you can create kafka cluster as self managed into vm or gke cluster , to load data from kafka to bq you have use create another cluster called kafka connect and use bigquery sync connector.
+
+or you can create kafka in confluent cloud as manged service there no create any cluster it has inbuilt sync connectors to stream the data.
+
+
+
+

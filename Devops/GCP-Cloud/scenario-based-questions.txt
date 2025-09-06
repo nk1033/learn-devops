@@ -1,0 +1,32 @@
+scenario: my application is deployed on private subnet , how can i access that application from internet ?
+************************************************************************************************************
+
+A)  - Use public facing load balancer in public subnets and route request to the private subnet where the application deploed.
+    - Use NAT gatewy , allow instances in a private subnet to initiate outbound connections , NAT gateway alone canot be used a direct access to the application.
+
+scenario1: my application deploed on vpc1 and i need to access this application from vpc 2?
+*******************************************************************************************
+
+if application deployed on shared vpc then by default all projects from service project are able to connect.
+if two different vpc's then we need to raise request for VPC peering.
+
+How It Works
+Create a peering connection request from VPC 1 to VPC 2.
+
+The owner of VPC 2 must accept the request.
+
+Update the route tables in both VPCs. You must add a route in each VPC's route table that points to the other VPC's CIDR block, with the peering connection as the target.
+
+Ensure that security groups and Network ACLs (NACLs) are configured to allow traffic between the peered VPCs.
+
+or use Transit gateway.
+
+How It Works
+Create a Transit Gateway.(aws) / HUB & Spoke models ( GCP ) which is called as NCC - network connectivity center  /  use cloud router ( dynamically exchange routes between your VPC and on-premises network)
+
+Attach VPC 1 and VPC 2 to the Transit Gateway.
+
+Configure the Transit Gateway's route table to allow traffic to be routed between the attached VPCs.
+
+Update the route tables of each VPC to route traffic destined for other VPCs to the Transit Gateway.
+

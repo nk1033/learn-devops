@@ -1,0 +1,100 @@
+1) Have you faced any challanges in your project if yes, how did you overcome that?
+A) My Team was Ramdown , and immediately some of the team members are moved out. it was very tough for us to fill their shoes. the head count was decresed from 8 to 4. this was a challanging phase because the timelines are very tight. we have to do the deliverables ontime but un-fortunatify we were not able to do that.
+
+so we handled this situation by jumping in sre role , switching multiple teams and attending the meatings by streching our timings we are able to handl the situation.
+
+2) what is your strength and weaknes?
+A) i'm confident what i'm working
+   I strict to the time lines of delevering the releases.
+   I'm always upto mark in delevering the product.
+
+   overthinking , I took extra time to provide the accurate results.
+
+3) How do you overcome conflicts with your team / client?
+A) it happens in every project but people usually will not showcase that. I will always give chance others to speak out their opinion and inputs. bcz conflicts are happen when others are not happy with the decisitions and not giving the proper credit or not supporting to the team members.
+
+4) How do you get upskill with new technologies?
+A} I'm very passonate about the technologies, So i will try to find the solutions in multiple ways in multiple directions, to implement one soltion in shorter path , I used to do lot of research , i read some articals and go woth some documentation , be prepared for updates and considering the possible opensource tolls to implement.
+
+5) explain where you find a difficult time in project?
+managing both proffesional and personal time.
+
+6) Do you work at multiple clients at same time and how do you manage it.
+Yes, if requorement from two client we have to do that, will work based on the pripority and dead lines .
+
+7) do you have experiance in handling team?
+
+I'm not a team leader but yes i can manage a team and i have done that. not a team leader on paper , i have been responsible for handling the tasks. will split the tasks into subtasks and assighn to the juniors and also in the curent organization i worked multiple projects single handedly.
+
+8) Which process will you fallow in the Project?
+
+we fallow the agile methadology , for few projects i worked for waterfall. in this we have spritns or iterations will happen in 3 - 4 weeks.
+
+Good thing in agile is will get lot of feedbacks and improving the process.
+
+we have sandup calls everyday will conect with team what is blockers , what worked yesterday and what tasks will work on today.
+
+When Waterfall is a better choice:
+Projects with clear and stable requirements: If the project's requirements are well-defined, unlikely to change, and can be documented in detail from the beginning, Waterfall's structured approach can be highly effective
+
+When Agile is a better choice:
+Projects with evolving requirements: If the project's requirements are likely to change or are not fully known at the outset,
+
+
+9) where do you see your self in next 3 / 5 years?
+A) I will definetly lead a larger team and take mare responsiblities under higher role in the company.
+
+10 ) why are you leaving your current job?
+A) two factors 
+
+I havn't been much utilized the project.I have upskilled multiple technologies but did get an apportunity to work on those technologies in the current organization.
+
+11) this role requires to work on different time zone, any concerns?
+A) Not at all . all of my experiance i work with US clients , UK clients 
+
+12) Are you aware of the JD.
+
+13) explain a situation where did you commited a mistake and how did you handle it.
+
+when i started my carrest as technical support enginner in one of the product based company there we don't have any restriction in the prod servers, as part of maintencae unexpected i have deleted production for a particular day. it got impacted to the telecaller data for one of our client . but we do have script to take backup for every day so we restored the data.
+
+i learend from the mistake. and concious of what needs to be done and what not..
+
+14) How do you prioritize your work and team works?
+A) we actually create a list of TO-do list , as said we start our day with the team meetings will discuus about the priprities and any dependencies and erros ( if any one faced similar error ) will keep it very short bcz team members can start working on to-do list.
+
+15) do you prefer individual role / working with the team?
+
+both have pros and cons.
+
+when you work with individual role, you no need to attend any meetings , you just need to focus on your work, just need to report to the clients.
+
+working with team have more ideas from the team  , suggestions .
+
+you can learn the way of approch 
+
+i usally prefer for team work but i will be open to work on any role.
+
+16) How do you handle stress?
+
+yeah honestly stress is something everyone has to overcome in their career path. yeah some times you will feel very stress with hard dead line . i take a small break and come back with fresh mind and speack with your family fpr stress buster.
+
+17) tell me something which is not mentioned in resume?
+
+A) sports and physical activities and cooking.
+
+18) if i call your previous manager and ask about you what they will say?
+
+I'm very panchual , i will be always in ontime for meetings or office.
+up to the mark of work
+confident with the work 
+stick to the time lines.
+
+19) how do you justify you are the fit then other condidates.
+A) I'm a fast learner , i do lot of research in understading the requirements usage of right tolls.
+
+i do have work experiance on many technologies will also integrate AI with my daily tasks to done my work very fast.
+
+20) Do you have any questions for me ?
+
+Thank you so much for this opportumity, i'm intrested in this possition could you help to understand the project and roles and responsponsiblites for this.

@@ -1,0 +1,34 @@
+push & pop 
+
+push is insert value into the list 
+pop is to remove element from the list 
+
+nums.pop(2)
+nums.pop()
+
+eaither we can use index or put blank . it will capture last input value
+
+to delete multiple elements from the list 
+
+del nums[2:]
+
+to add multiple values 
+
+nums.extend[(29,12,14,36)]
+
+min(nums)
+max(nums)
+sum(nums)
+
+To provide minimum , maximum and sum of all nums values .
+
+nums.sort()
+
+it will put in sequential order .
+
+In Python, both append() and insert() are list methods used to add elements, but they do so in different ways:
+
+append(element): Adds an element to the end of the list.
+
+insert(index, element): Inserts an element at a specific index in the list.
+

@@ -1,0 +1,149 @@
+1) How will you make sure your application is High available in kubernetes?
+
+Deploying a high-availability (HA) application in Kubernetes requires a multi-layered approach 
+
+- Replicas and Pod Disruption Budgets
+- Node and Zone-Level Resilience ( To protect against hardware or data center failures, spread your application pods across multiple nodes and Availability Zones.)
+Affinity and Anti-Affinity: Use podAntiAffinity to ensure that no two pods of the same application are scheduled on the same node. This prevents a single node failure from taking down all your application instances.
+
+- Health Checks and Self-Healing using liveness & readieness probe.
+
+- Cluster-Level Resilience cluster 
+        To ensure your entire Kubernetes cluster is highly available, you should:  Deploy a multi-master cluster.
+        Use StatefulSets for Stateful Applications: For applications that require persistent storage and stable network identities (like databases), use a StatefulSet instead of a Deployment. A StatefulSet ensures that a pod's identity and storage are preserved even if the pod is rescheduled.
+
+- Persistent Storage and Backups - Ensure your data is not tied to a single node using pvc , pv 
+
+2) explain the flow how trafic will route to your application when user tried to access your application.
+----- The flow of external traffic 
+- DNS resolution 
+    Ingress Controller: An external request (from a user's browser) first hits the Ingress Controller. The Ingress Controller acts as the smart traffic manager for your cluster, routing requests based on rules like the hostname (myapp.com) or URL path (/api). It acts as a Layer 7 load balancer.
+- Service: The Ingress Controller forwards the request to the correct Service within the cluster. A Service is a Kubernetes object that defines a stable network endpoint for a group of pods.
+
+- kube-proxy: Every node in the cluster runs a component called kube-proxy. Its job is to watch for new Services and configure networking rules (using iptables or IPVS) on each node. When a request arrives at a Service's IP, kube-proxy intercepts it and routes the traffic to one of the healthy backend pods.
+
+- Pod: The request finally arrives at an individual Pod, which is a running instance of your application.
+
+--- the flow of internal traffic.
+
+When one application or microservice inside the cluster needs to talk to another, it uses Service Discovery.
+
+Service Discovery (kube-dns): Instead of using an unstable IP address, applications refer to each other by their Service name (e.g., api-service).
+
+kube-dns: When an application tries to access api-service, its request goes to the kube-dns service. kube-dns resolves the service name to its internal cluster IP address.
+
+kube-proxy: The traffic is then routed to the Service's cluster IP, where kube-proxy takes over and directs it to a healthy pod.
+
+
+3) How will you handle outgoing traffic?
+
+Outgoing traffic in Kubernetes is handled through a combination of network policies, service meshes egress gateway's , and firewalls. The default Kubernetes network model allows all pods to communicate with each other and with external services.
+
+if we want to manage from service mesh 
+
+Step 1: Configure a ServiceEntry
+First, you define a ServiceEntry to tell the Istio service mesh about the external service. This is how Istio knows to handle traffic to api.example.com as part of its mesh.
+
+Step 2: Define the Egress Gateway
+Next, you create a Gateway resource specifically for egress traffic. This gateway is the single exit point for your cluster's pods.
+
+Step 3: Route Traffic with a VirtualService
+Finally, you create a VirtualService to route traffic from your pods to the external service through the egress gateway.
+
+4) what is the difference between virtual service & destination rules.
+
+A VirtualService is used for traffic routing and manipulation. It defines a set of routing rules for incoming traffic to a specific host. It's the first stop for a request in the service mesh.
+
+Key Functions:
+
+Traffic Splitting: Routing a percentage of traffic to different versions of a service (e.g., 90% to v1 and 10% to v2).
+
+Request Redirection/Rewrites: Changing the URL or host of a request.
+
+A DestinationRule is used for post-routing traffic policy. It configures the load-balancing and connection properties for a service's traffic. It's the last stop before the request is delivered to a specific pod.
+
+Key Functions:
+
+Subsets: Creating named subsets of service endpoints (e.g., v1, v2) to route traffic to specific versions.
+
+Load Balancing: Defining the load-balancing algorithm (e.g., round-robin, least connections) for the traffic.
+
+
+5) How do you manage multiple clusters in kubernetes?
+
+by using kubefed / rancher.
+
+kubefed is used for resource distribution and rancher will help to deploy resources and manage clusters and monitor application.
+
+6) How to implement Disaster recovery in kubernetes?
+
+Use tools like Velero to back up cluster resources and persistent volumes.
+install : - velero install  --provider aws  --bucket <BUCKET_NAME>  --backup-location-config region=<REGION>  --use-restic
+
+Create Backup : - velero backup create my-cluster-backup --include-cluster-resources 
+
+restore backup : - velero restore create --from-backup my-cluster-backup 
+
+Velero can back up entire namespaces, workloads, and persistent volumes, making disaster recovery 
+easier. 
+
+7) i have two clusters i want to deploy one application into two clusters at a time by using Helm chart.
+
+- > Manual CLI approch ( scripting)
+
+  #!/bin/bash
+
+# Define your cluster contexts
+clusters=("cluster-1-context" "cluster-2-context")
+
+# Define common Helm values
+RELEASE_NAME="my-app"
+CHART_PATH="./my-chart"
+
+# Loop through each cluster and deploy the chart
+for cluster in "${clusters[@]}"; do
+    echo "Deploying to cluster: $cluster"
+    kubectl config use-context "$cluster"
+    helm upgrade --install "$RELEASE_NAME" "$CHART_PATH" --atomic --wait
+done
+
+echo "Deployment complete for all clusters."
+
+- > Using HelmFile 
+
+Helmfile is a declarative tool that sits on top of Helm. It allows you to manage multiple Helm releases across different clusters and environments from a single file. This is a much better approach for managing deployments at scale.
+
+create helmfile.yaml
+
+# helmfile.yaml
+environments:
+  dev:
+    kubeContext: cluster-1-context
+  prod:
+    kubeContext: cluster-2-context
+
+releases:
+  - name: my-app
+    namespace: my-app-ns
+    chart: ./my-chart
+    values:
+      - values.yaml
+    # Use different values for each cluster
+    values:
+      - environments/{{ .Environment.Name }}/values.yaml
+
+
+run command  --- > helmfile apply 
+
+--> Gitops solution 
+
+ How It Works:
+Install the GitOps agent (e.g., the Argo CD agent) on each of your Kubernetes clusters.
+
+Define your application's deployment manifest (e.g., a Helm release) in a Git repository.
+
+Configure the GitOps agent in each cluster to watch the Git repository for changes.
+
+When you commit and push a change to the Helm chart's values or version in Git, the agents in both clusters will automatically detect the change and pull the latest configuration.
+
+Each agent will then apply the Helm chart to its respective cluster, ensuring that the clusters' states always match the state defined in your Git repository.

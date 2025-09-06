@@ -1,0 +1,37 @@
+1) How to to enable CDN for kubernets.
+A) create deployment and service for the application as nodeport / loadbalancer ( ingress will manage the external exposure)
+   create backend config for CDN
+   create ingress and associate backendconfig in the annotations .
+
+2) explain the steps of traffic flow routed to an application when we hit a url in the browser in kubernetes?
+
+Browser (Client)
+      |
+      | (DNS Resolution)
+      V
+DNS Server (myapp.example.com -> Load Balancer IP)
+      |
+      | (HTTPS/HTTP)
+      V
+Cloud Provider's External Load Balancer (e.g., ALB, GCP HTTP(S) LB, App Gateway)
+      |   (SSL Termination, WAF, DDoS Protection)
+      |
+      V
+Kubernetes Node (via NodePort)
+      |   (kube-proxy routes to Ingress Controller)
+      V
+Ingress Controller Pod (inside Kubernetes)
+      |   (Inspects Ingress Resource rules: hostname, path)
+      |   (Routes to Service Cluster IP)
+      V
+Kubernetes Service (Cluster IP)
+      |   (kube-proxy load balances across Pods)
+      V
+Application Pod (e.g., my-web-app-xxxxx)
+      |
+      V
+Application Container (e.g., NGINX)
+      |
+      | (Response)
+      V
+(Reverse path back to Browser)

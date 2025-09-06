@@ -1,0 +1,11 @@
+without docker what are the challanges are there?
+
+1) dependency managment --different os , tools , dependencies 
+2) insufficiant resource usage -- multiple vm or single VM hosting multiple applications.
+3) complex and error probe deployment ---Manual configuration for different environments 
+4) lack of isolation --- multiple apps on the same VM.
+
+docker is a portable , it works on multiple operating systems.
+
+docker is a platform for containerization , it simplifies development and deployment .
+containers package application and all dependencies in an isolated environment.

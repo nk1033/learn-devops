@@ -1,0 +1,11 @@
+In Python, a namespace is a system that provides a unique name for every object.  You can think of it as a dictionary where the keys are names (variables, functions, etc.) and the values are the corresponding objects.  This prevents naming conflicts.
+
+Python has several types of namespaces, including:
+
+Built-in namespace: Contains names for built-in functions, exceptions, and other core elements of Python.  This namespace is always available.
+
+Global namespace: Contains names defined at the module level or in the main script of a program.
+
+Local namespace: Contains names defined within a function.  This namespace is created when the function is called and destroyed when the function returns.
+
+Enclosing namespace:  Exists in nested functions and contains names from the outer function's scope.

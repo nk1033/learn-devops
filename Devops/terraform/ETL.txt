@@ -1,0 +1,306 @@
+1) Load data from gcp -- bigquery through terraform
+
+
+First approch : - 
+****************
+--- > create a bigquery data set and table ( table includes scema config and External data configuration)
+
+resource "google_bigquery_dataset" "my_dataset" {
+    dataset_id = "my_dataset"
+    location = US
+}
+
+resource "google_bigquery_table" "my_table" {
+    dataset_id = google_bigquery_dataset.my_dataset.dataset_id
+    table_id  = "my_gcs_data_table"
+
+    schema = <<-EOT
+    [
+        {"name" : "id",
+         "type" : "INTEGER"
+        },
+        {
+         "name" : "name",
+        "type" : "STRING"
+        }
+    ]
+    EOT
+
+## link the table to the GCS source 
+## file should be already available in that path.
+
+  external_data_configuration {
+    source_uris = ["gs://my-source-bucket/data.csv"]
+    source_format = "CSV"
+  }
+}
+
+
+******************
+automate the deployment process by creating bigquery  data transfer config or cloud functions or Airflow/cloud composer
+
+example for google_bigquery_data_transfer_config
+
+resource "google_bigquery_data_transfer_config" "gcs_transfer" {
+    display_name = "My GCS to Bigquery Transfer"
+    location = "US"
+    data_source_id = "google_cloud_storage"
+    destination_dataset_id = google_bigquery_dataset.my_dataset.dataset_id
+    schedule = "Every 24 Hours"
+    params {
+        source_uri_template = "gs://my-source-bucket/data-*.csv"
+        destination_table_name_template = "my_table"
+
+    }
+}
+
+
+****************************************************************************
+
+To Create a Event driven ETL pipeline.
+
+- create GCS bucket and configure notification trigger to the pubsub topic
+- create a pubsub topic and subscription and dataflow template to run dataflow job 
+- create bigquery dataset and table and add details to dataflow template to load data into bigquery.
+
+resource "google_storage_bucket" "my_bucket" {
+    name = "my-data-source-bucket"
+    location = "US"
+}
+
+resource "google_pubsub_topic" "my_pubsub_topic" {
+    name  = "gcs-dataflow-topic"
+}
+
+## Get GCS service account permission to publish to the pub/sub topic 
+
+data "google_storage_project_service_account" "gcs_account" {}
+
+resource "google_pubsub_topic_iam_member" "gcs_publisher" {
+    topic = google_pubsub_topic.my_pubsub_topic.name 
+    role = "roles/pubsub.publisher"
+    member = serviceAccount:{data.google_storage_project_service_account.gcs_account}
+}
+
+## Create GCS notification
+
+resource "google_storage_notification" "file_upload_notification" {
+    bucket = google_storage_bucket.my_bucket
+    topic  = google_pubsub_topic.my_pubsub_topic
+    event_types = ["OBJECT_FINALIZE"]
+    depends_on = [google_pubsub_topic_iam_member.gcs_publisher]
+}
+
+
+************************
+
+Setup the bigquery dataset and table 
+
+
+resource "google_bigquery_dataset" "my_dataset" {
+    dataset_id = "my_dataset"
+    location = US
+}
+
+resource "google_bigquery_table" "my_table" {
+    dataset_id = google_bigquery_dataset.my_dataset.dataset_id
+    table_id  = "my_gcs_data_table"
+
+    schema = <<-EOT
+    [
+        {"name" : "id",
+         "type" : "INTEGER"
+        },
+        {
+         "name" : "name",
+        "type" : "STRING"
+        }
+    ]
+    EOT
+}
+
+************************
+
+Create a dataflow job 
+
+# Get the project default Service account 
+
+data "google_project_service_account" "default" {}
+
+## Grant Dataflow Service account permissions to read from pub/sub and write to bigquery
+
+resource "google_pubsub_subscription_iam_member" "dataflow_subscriber_iam" {
+    subscription = google_pubsub_topic.my_pubsub_topic.id
+    role = "roles/pubsub.subscriber"
+    member = "serviceAccount:{data.google_project_service_account.default.email}"
+}
+
+resource "google_bigquery_dataset_iam_member" "dataflow_writer_iam" {
+    dataset_id = google_bigquery_dataset.my_dataset.dataset_id
+    role = "roles/bigquery.dataEditor"
+    member = "serviceAccount: {data.google_project_service_account.default.email}
+}
+
+## Define the dataflow Flex template Job.
+
+resource "google_dataflow_flex_template_job" "gcs_to_bigquery_job" {
+    name = "gcs-to-bigquery-load-job"
+    project = var.project_id 
+    container_spec_gcs_path = "gs://dataflow_templates-${var.region}/latest/flex/GCS_TEXT_TO_BIGQUERY_FLEX"
+
+    # pass perameters to the dataflow job template
+
+    parameters {
+        inputfilePattern = "gs://${google_storage_bucket.my_bucket.name}/**"
+        bigQueryDataset = "dataset"
+        bigQueryTable = "table"
+        schema = "customer_id:INTEGER, name:STRING,city:STRING"
+    }
+    stream_mode = true 
+
+}
+
+
+Note: if dataflow template is batch job , in the parametes we need to specify deletingOnSuccess = true to delete the file once it's Successfully loaded to bq .. for stream no need to delete.
+
+*****************************
+
+How composer will perform same process .
+
+1 - By using a Sensor in Polling DAG 
+
+*************************************
+
+This is a common and straight forward method. You create an airflow dag that runs on a schedule ( eg : every 5 minutes).
+The first task in this DAG is a sensor that checks for the existence of a new file in a specific GCS bucket.
+
+Use GCSObjectExistenceSensor operator as the first task in DAG. 
+when the sensor detects a new file.  use GCSToBigQueryOperator to run another tasks to load data to bigquery
+
+
+from __future__ import annotations
+import pendulum
+from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+
+
+with DAG(
+    dag_id = "gcs_to_bigquery_sensor_dag",
+    scheduled_interval = "*/5 * * * *", # runs every 5 minutes 
+    start_date=pendulum.datetime(2023,1,1, tz="UTC"),
+    tags = ["gcs","bigquery"],
+) as dag:
+    # task1 : - Wait for a new file to appear in the GCS bucket.
+   wait_for_file = GCSObjectExistenceSensor(
+    task_id = "wait_for_new_file",
+    bucket="my-source-bucket",
+    mode = "poke" ## recommended for cloud composer 
+    object = "data/new_data.csv"
+   )
+   # task 2 : - Load the file into Bigquery
+   load_gcs_to_bq = GCSToBigQueryOperator(
+    task_id = "load_to_bq",
+    bucket="my_source_bucket",
+    souece_objects = ["data/new_data.csv"],
+    destination_project_dataset_table ="my_project.raw_data_staging_dataset.customer_data_table"
+    write_disposition="WRITE_TRUNCATE"
+   )
+
+   # Set the Task dependency 
+
+   wait_for_file >> load_gcs_to_bq
+
+
+   2) Using an External Trigger ( Event Driven Trigger with Cloud function)
+   By using this for true event-driven pipelines, this avoids the need for a continuously running "polling" DAG and is more efficient.
+
+   -> configure GCS to pubsub notification 
+   -> cloud function as a bridge 
+   -> trigger airflow , when cloud function receives message, it makes a REST API call to the airflow, providing GCS file URL as a parameter . THis API call triggers a specific airflow DAG run.
+   -> The triggered Airflow tag receives the GCS file URL path and it uses GCSToBigQueryOperator to load data into bq 
+
+Step1: create airflow dag ( dag_event_driven.py)
+
+from __future__ import annotations
+import pendulum
+from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+
+
+with DAG(
+    dag_id = "gcs_to_bigquery_sensor_dag",
+    scheduled_interval = "*/5 * * * *", # runs every 5 minutes 
+    start_date=pendulum.datetime(2023,1,1, tz="UTC"),
+    tags = ["gcs","bigquery"],
+) as dag:
+   # task : - Load the file into Bigquery
+   load_gcs_to_bq = GCSToBigQueryOperator(
+    task_id = "load_to_bq",
+    bucket="my_source_bucket",
+    souece_objects = ["data/new_data.csv"],
+    destination_project_dataset_table ="my_project.raw_data_staging_dataset.customer_data_table"
+    write_disposition="WRITE_TRUNCATE"
+   )
+
+Step2: cloud functions code 
+***************************
+
+This python function is deployed to cloud functions and configured to trigger on a pub/sub message. it extracts the GCS file details from the message and calls the airflow REST API to trigger the DAG.
+
+import requests
+import os 
+import json
+import base64
+
+def trigger_airflow_dag(event, context):
+    """
+    Triggers an Airflow DAG via REST API in response to a pub/sub message 
+    """
+    # Get the Airflow and Project Details from environment variables 
+    webserver_url = os.environ.get('AIRFLOW_WEBSERVER_URL')
+    airflow_user = os.environ.get('AIRFLOW_USER')
+    airflow_pass = os.environ.get('AIRFLOW_PASSWORD')
+    dag_id = os.environ.get('AIRFLOW_DAG_ID')
+
+    if not webserver_url or not airflow_user or not airflow_pass or not dag_id:
+         raise ValueError("Missing environment variables")
+
+    try:
+      # Decode the pub/sub message to get the GCS file details.
+      message_data = base64.b64decode(event['data']).decode('utf-8')
+      gcs_payload = json.loads(message_data)
+
+      # Extract Bucket and File name 
+
+      bucket = gcs_payload['bucket']
+      file_name = gcs_payload['name']
+
+      ## Prepare the data to be sent to the Airflow DAG's 'conf' parameter.
+
+      payload = {
+        "conf": {
+            "bucket": bucket,
+            "name": file_name
+        }
+      }
+
+      ## Make an API call to trigger the DAG 
+
+      response = requests.post(
+        f"{webserver_url}/api/v1/dags/{dag_id}/dagRuns",
+        auth=(airflow_user, airflow_pass)
+        json = payload
+      )
+
+    response.raise_for_status()
+    print(f"Successfully triggered Airflow DAG run for file: {file_name}")
+
+except Exception as e:
+print(f"An error occured : {e}")
+raise
+
+
+
+Note: If you want to delete source file from the folder after data loaded into bq 
+you need to add one more tasks in the DAG by using GCSDeleteObjectOperator 
+

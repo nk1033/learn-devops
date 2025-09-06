@@ -1,0 +1,22 @@
+Apache airflow commonly used for tasks like ETL pipelines , Machine Learning pipelines and automating Devops tasks.
+
+Amazon managed workflow will manage the apache airflow workflows.
+
+it take care of setup , scaling , security , upgrades and monitoring.
+
+it contains collections of dags , direct ascilic graph .
+
+a DAG is a collection of tasks .
+
+to create a task we need operators - bash / python / Email 
+to run a task we need executors - sequential , celery , local 
+
+airflow will create on the VPC, we need to select 2 subnets for the high availability 
+
+
+aws step functions:
+******************
+allow you to create workflows that fallow a fixed or dynamic sequence.
+it has built in retry functionality 
+native integration with aws services such as lamda & sns 
+it has GUI for  monitor workflow process.

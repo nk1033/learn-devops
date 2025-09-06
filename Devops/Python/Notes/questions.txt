@@ -1,0 +1,28 @@
+1) what are the primitive types in Python
+we strings , numbers & boolens 
+
+numbers can be integers , floats & complex numbers 
+
+2) what is the output 
+fruit = "Apple"
+print(fruit[1:-1])
+##  -- this will print based on index , i.e ppl 
+
+3) 10 % 3 
+
+This is modulos opperator , it turns remainder in division 
+means the value is 1 
+
+4) what will print 
+
+print(bool("Fasle"))
+
+will get true 
+
+5) How to create virtual environment in python.
+
+if you are working on multiple python projects, if project A require one python version and project B requires different python version then we need a virtual environemnt 
+
+python -m venv venv 
+
+to activate : - venv\Scripts\activate
