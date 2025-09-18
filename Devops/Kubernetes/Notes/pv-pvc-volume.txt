@@ -1,0 +1,62 @@
+Here are the code snippets to create a PersistentVolume (PV), a PersistentVolumeClaim (PVC), and a Pod that mounts the PVC. These files should be applied in a specific order for the flow to work correctly.
+
+Step 1: Create a PersistentVolume (pv.yaml)
+First, you define the PV. This is the cluster-level resource that represents the underlying storage. In this example, we'll create a PV that references an existing Google Cloud Persistent Disk. You would replace my-gcp-disk with the actual name of your disk.
+
+YAML
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gcp-disk-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: standard
+  gcePersistentDisk:
+    pdName: my-gcp-disk # This is the name of your pre-provisioned GCP disk.
+    fsType: ext4
+Apply this file first: kubectl apply -f pv.yaml
+
+Step 2: Create a PersistentVolumeClaim (pvc.yaml)
+Next, you create the PVC. This resource is a request for storage that a developer would use. The scheduler will match this claim to the available PV from the previous step.
+
+YAML
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-app-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard
+Apply this file second: kubectl apply -f pvc.yaml
+
+Step 3: Mount the PVC to a Pod (pod.yaml)
+Finally, you can define a Pod that mounts the PVC. The Pod will now have access to the underlying storage from the GCP Persistent Disk.
+
+YAML
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+    volumeMounts:
+    - name: data-volume
+      mountPath: /data
+  volumes:
+  - name: data-volume
+    persistentVolumeClaim:
+      claimName: my-app-pvc
+Apply this file last: kubectl apply -f pod.yaml

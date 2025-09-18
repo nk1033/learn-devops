@@ -146,3 +146,76 @@ output "s3_bucket_name" {
 value = aws_s3_bucket.example_bucket.bucket
 description = "The name of the S3 bucket."
 }
+
+To create lamda function 
+************************
+
+# IAM Role for Lambda
+resource "aws_iam_role" "lambda_role" {
+  name = "lambda_executor"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+# Attach basic execution policy
+resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+# Package the Lambda code
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "function.py"
+  output_path = "function.zip"
+}
+
+# Lambda Function
+resource "aws_lambda_function" "my_lambda" {
+  function_name    = "my-terraform-function"
+  filename         = data.archive_file.lambda_zip.output_path
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  runtime          = "python3.9"
+  handler          = "function.lambda_handler"
+}
+
+to create ECS cluster
+*********************
+
+resource "aws_ecs_cluster" "my_cluster" {
+  name = "my-terraform-ecs-cluster"
+
+  tags = {
+    Name = "MyECSCluster"
+  }
+}
+
+to create eks cluster 
+********************
+
+# This is a very basic example. A real-world EKS setup requires a VPC, subnets, and IAM roles.
+resource "aws_eks_cluster" "my_eks_cluster" {
+  name     = "my-terraform-eks-cluster"
+  role_arn = "arn:aws:iam::123456789012:role/eks-cluster-role" # CHANGE THIS TO YOUR EKS ROLE ARN
+  
+  vpc_config {
+    # Replace with your actual subnet IDs
+    subnet_ids = ["subnet-0123456789abcdef0", "subnet-0fedcba9876543210"] 
+  }
+
+  version = "1.28" # Use a stable Kubernetes version
+
+  tags = {
+    Name = "MyEKSCluster"
+  }
+}

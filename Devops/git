@@ -1,0 +1,49 @@
+Basic Workflow Commands
+These commands are your daily tools for working with Git.
+
+git init: Initializes a new Git repository in your current directory. It creates a hidden .git folder to track changes.
+
+git add <file>: Stages a file for the next commit. Think of it as putting a file into a staging area. You can use git add . to stage all new and modified files.
+
+git commit -m "<message>": Saves the staged changes to the local repository. The message should be a short, clear description of what you did.
+
+git status: Shows the state of your working directory and staging area. It tells you which files are tracked, modified, or ready to be committed.
+
+Branching Commands
+Branching is core to Git. It lets you work on features or bug fixes in isolation from the main codebase.
+
+git branch <branch-name>: Creates a new branch.
+
+git checkout <branch-name>: Switches to an existing branch. You'll see the files in your directory change to reflect the code on that branch.
+
+git merge <branch-name>: Integrates changes from the specified branch into your current branch.
+
+git pull: Fetches and merges changes from the remote repository into your current branch. It's a combination of git fetch and git merge.
+
+git push: Pushes your local commits to the remote repository.
+
+Remote Repository Commands
+These commands are for working with a remote repository, like one hosted on GitHub or GitLab.
+
+git clone <url>: Downloads an entire repository from a remote URL to your local machine.
+
+git remote -v: Shows the remote repositories you're connected to.
+
+git fetch: Downloads new changes from the remote without merging them into your local branch.
+
+git push -u origin <branch-name>: Pushes your branch to the remote repository for the first time, setting it as the upstream branch.
+
+Review and Undo Commands
+Sometimes you need to review history or fix a mistake.
+
+git log: Shows a history of all commits, including their ID, author, date, and message.
+
+git diff: Shows the differences between your working directory and the staging area or between two commits.
+
+git reset <file>: Unstages a file. It moves a file from the staging area back to your working directory.
+
+git revert <commit-id>: Creates a new commit that undoes the changes from a previous commit. This is a safe way to undo changes.
+
+git merge integrates changes by creating a new merge commit. This new commit has two parents: the last commit of your feature branch and the last commit of the target branch. It preserves the exact history of your commits as a non-linear flow.
+
+git rebase moves or combines a sequence of commits to a new base commit. In other words, it rewrites history by taking all the commits from your feature branch and re-applying them one by one on top of the target branch. This creates a clean, linear commit history that looks like the work was done in a straight line.

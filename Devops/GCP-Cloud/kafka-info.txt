@@ -153,3 +153,126 @@ commands to produce / consume
 ./kafka-console-producer.sh --topic --bootstrap-server --property "acks-all"
 
 ./kafka-console-consumer.sh --topic --bootsteap-server --from-begining / erleir / offset  --max-messages 100 
+
+
+kraft - kafka raft 
+
+is a new way of handling co-ordination and metadata without needing zookeeper
+it uses a built it raft protocal so that kafka brokers manges evrything themselves.
+
+process to install kraft 
+
+- > Generate a uinque ID
+bin/kafka-storage.sh randon-uuid 
+
+- > format the storage directory with the genarated cluster ID 
+bin/kafka-storage.sh format -t <UUID> -c config/kraft/server.properties
+
+- > start kafka server 
+
+bin/kafka-server-start.sh config/kraft/server.properties 
+
+
+example1: Create a topic with 2 partitions and publish message with key so that it distribute the messages among all partitions.
+and then create two consumers connected to a topic part of same group.
+
+-> Create a Topic with 2 partitions
+./kafka-topics.sh --create --topic orders --bootstrap-server localhost:9092 --partitions 2 --replication-factor 1 
+
+-> Start producer and send messages using key so that it will distribute among both partitions.
+
+kafka-console-producer.sh --bootstarp-server localhost:9092 --topic test-topic3 --property parse.key=true --property key.seperator=:
+
+below are test messages after connecting to producer 
+
+keyA:message1
+keyB:message2
+
+if keyA meesage is consumed from consumer1 and if we publish message again with with keyA then same consumer will consume again. it will not consume by other consumer.
+
+- > Create two consumers connected to a topic part of same group.
+
+kafka-console-consumer.sh --bootstarp-server localhost:9092 --topic test-topic3 --group tg 
+
+
+To list out consumer groups 
+***************************
+
+./kafka-consumer-groups.sh --bootstarp-server localhost:9092 --describe --group my-group 
+
+./kafka-consumer-groups.sh --bootstarp-server localhost:9092 --list
+
+from the consumer group you can identify which consumer is connected to which topi and which partition to pull data and also we can see the current offset and log end offset and host ip of where consumer ran.
+
+****************************
+
+TO setup kafka UI
+
+- add your IP in server.properties
+      advertised.listeners=PLAINTEXT://<IP>:9092
+      
+  And then restart kafka
+  
+- use docker image provectuslabs/kafka-ui 
+
+docker run --rm -d -p 8080:8080 -e KAFKA_CLUSTERS_0_NAME=my-cluster KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=<IP>:9092 --name kafkaui --image provectuslabs/kafka-ui
+
+
+
+Project1:- 
+
+- Python program which takes user email and store in a text file 
+- producer.py 
+       it will keep checking the text file if any new user added in the file and send it to kafka topic.
+- consumer.py
+       It will keep checking any new data in kafka topic and consume the messages.
+
+Note: will add the code in python folder.
+
+
+*******************
+
+kafka connect :
+****************
+
+kafka connect is a tool in apache kafka that helps move data between kafka and other systems. like ( database , cloud storage , message queues ). autometically using connectors .
+
+we have 2 types of connectors 
+
+source connectors -- Pull data from external sources to kafka 
+
+sync connectors  -- send kafka data to external services 
+
+use scripts like connect-distributed.sh or connect-standalone.sh 
+
+kafka stream 
+**************
+
+kafka stream is a java librabry for real time stream processing on kafka topics . it allows you to read , transform , aggregate and write data back to kafka -- all within your application.
+
+grant ACL permissions
+***********************
+
+for publisher -> ./kafka-acls.sh --add --bootstarp-server localhost:9092 --allow-principal User:user --topic my-topic --operation write
+
+for consumer ->  ./kafka-acls.sh --add --bootstarp-server localhost:9092 --allow-principal User:user --topic my-topic --operation read
+
+for consumer group -> ./kafka-acls.sh --bootstarp-server localhost:9092 --add --allow-principal User:user-name --group my-group --operation read 
+
+To list acls - >  ./kafka-acls.sh --bootstarp-server localhost:9092 --list --topic my-topic
+
+
+ports :
+
+2181 for zookeeper 
+9092 for kafka 
+
+
+
+
+
+
+
+
+
+

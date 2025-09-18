@@ -1,0 +1,17 @@
+Generative AI :
+***************
+
+it is a type of artificial intelegence that creates new content such as text , images , audio based on the existing data.
+
+AI Agent :
+**********
+AI agent is a program that takes input , thinks and acts to complete a task using tools , memory and knowledge.
+
+Agentic AI :
+************
+
+Agentic AI is a system where one or more AI agents work autonomously, often over long tasks, making descisions and even other agents to reach a goal.
+
+
+genai--->AI agent ---> genetic AI 
+complexity of the task that you can perform increases and it becomes more and more sophisticated.

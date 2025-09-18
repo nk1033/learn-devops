@@ -9,3 +9,35 @@ docker is a portable , it works on multiple operating systems.
 
 docker is a platform for containerization , it simplifies development and deployment .
 containers package application and all dependencies in an isolated environment.
+
+
+1) what is the difference between CMD and ENTRY POINT?
+
+While both CMD and ENTRYPOINT in a Dockerfile define the command that runs when a container starts, they differ in how they handle command-line arguments provided at runtime.
+
+ENTRYPOINT is the fixed script that the container will always run. It's the main command that turns your container into a specific executable. Anything you pass to docker run is treated as an argument to this script.
+
+CMD is the default list of arguments for the ENTRYPOINT script. It provides a default behavior for the container that can be easily overridden.
+
+example :
+
+FROM nginx
+ENTRYPOINT ["ping"] 
+CMD ["localhost"] 
+
+when you execute docker run , then the output will be ping localhost.
+
+when pass argument while running docker , docker run google.com , the output will be ping google.com
+
+
+docker vc kuberneres ?
+
+The main difference is that Kubernetes is a production-grade, distributed container orchestration system designed for managing complex, large-scale applications across a cluster of machines, while Docker Compose and Docker Swarm are better suited for single-host or simpler multi-host deployments.
+
+While Docker Compose and Docker Swarm provide features for deploying multi-container applications and some level of scaling, Kubernetes offers a more robust and comprehensive set of features that are essential for enterprise-level applications:
+
+self healing
+auto scaling
+Extensive eco system, - kubernetes has a massive, open source ecosystem with a wide range of tools for monitoring (promothes) monitoring(fluentd) and CD as argocd.
+cloud native integrations.
+declarative configuration.

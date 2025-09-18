@@ -1,0 +1,92 @@
+1) terraform lifecycle?
+Terraform allows you to control the lifecycle of resources using the lifecycle block. This is useful for 
+customizing how Terraform handles resource creation, update, or deletion.  
+Here are some common lifecycle arguments:  
+• create_before_destroy: Ensures that a new resource is created before the old resource is 
+destroyed.  
+• prevent_destroy: Prevents Terraform from destroying a resource.  
+• ignore_changes: Tells Terraform to ignore specific changes to resource attributes.  
+
+2) what is dynamic blocks?
+A dynamic block allows you to conditionally add multiple nested blocks within a resource based on a 
+variable or a loop. It consists of three parts:  
+• for_each: Defines the collection to iterate over (a list or map).  
+• content: Defines the content that will be generated for each item in the loop.  
+
+Example:  
+variable "allowed_ports" { 
+default = [22, 80, 443]   
+} 
+resource "aws_security_group" "my_sg" { 
+name = "example-sg"   
+dynamic "ingress" {   
+for_each = var.allowed_ports 
+content {  
+from_port   = ingress.value       
+to_port     = ingress.value       
+protocol    = "tcp"      
+ cidr_blocks 
+= ["0.0.0.0/0"]  
+}  
+}  
+}  
+
+
+triggers 
+********
+A triggers block in Terraform is a meta-argument used within a null_resource to force its recreation whenever a specified value changes. This is typically used to re-run a provisioner when a related resource is updated.
+
+terraform datatypes:
+*********************
+Terraform has a core set of primitive types and complex collection types.
+
+Primitive Types
+These are the fundamental building blocks.
+
+string: Represents a sequence of characters, such as "us-east-1", "hello", or "ami-0c55b159cbfafe1f0".
+
+number: Represents any numeric value, including integers and floating-point numbers. Examples: 15, 3.14, or 100.
+
+bool: Represents a boolean value, either true or false.
+
+Collection Types
+These types are used to group multiple values together.
+
+list (or tuple): An ordered collection of values of the same or different types. It is defined with square brackets []. A list is indexed starting from zero.
+
+Example of a list of strings: ["t2.micro", "t2.small", "t2.medium"]
+
+Example of a tuple: [10, "instance", true]
+
+map (or object): An unordered collection of key-value pairs. Keys must be strings, and values can be of any type. It is defined with curly braces {}.
+
+Example of a map: { ami = "ami-0c55b159cbfafe1f0", type = "t2.micro" }
+
+set: An unordered collection of unique values of a single type. Sets are useful when the order and uniqueness of elements matter.
+
+Example: set("us-east-1", "us-east-2")
+
+
+
+Object vs. Map: What's the Difference?
+The distinction between an object and a map is crucial.
+
+A map is a simple key-value collection. All values must be of the same type, but the keys are not predefined. For example, a map(string) can hold any number of string values, and you can add or remove keys at will.
+
+An object is a fixed-structure collection. You define the exact names and types of the attributes beforehand. The object must contain exactly those attributes, and their values must match the specified types.
+
+# Define an object variable to store instance details.
+variable "instance_config" {
+  type = object({
+    name             = string
+    instance_count   = number
+    is_public        = bool
+  })
+  description = "A configuration object for a group of instances."
+
+  default = {
+    name           = "web-server"
+    instance_count = 3
+    is_public      = true
+  }
+}

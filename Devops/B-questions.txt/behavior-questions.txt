@@ -14,7 +14,7 @@ A) i'm confident what i'm working
 A) it happens in every project but people usually will not showcase that. I will always give chance others to speak out their opinion and inputs. bcz conflicts are happen when others are not happy with the decisitions and not giving the proper credit or not supporting to the team members.
 
 4) How do you get upskill with new technologies?
-A} I'm very passonate about the technologies, So i will try to find the solutions in multiple ways in multiple directions, to implement one soltion in shorter path , I used to do lot of research , i read some articals and go woth some documentation , be prepared for updates and considering the possible opensource tolls to implement.
+A} I'm very passonate about the technologies, So i will try to find the solutions in multiple ways in multiple directions, to implement one soltion in shorter path , I used to do lot of research , i read some articals and go woth some documentation , be prepared for updates and considering the possible opensource tools to implement.
 
 5) explain where you find a difficult time in project?
 managing both proffesional and personal time.
@@ -61,7 +61,7 @@ when i started my carrest as technical support enginner in one of the product ba
 i learend from the mistake. and concious of what needs to be done and what not..
 
 14) How do you prioritize your work and team works?
-A) we actually create a list of TO-do list , as said we start our day with the team meetings will discuus about the priprities and any dependencies and erros ( if any one faced similar error ) will keep it very short bcz team members can start working on to-do list.
+A) we actually create a list of TO-do list , as said we start our day with the team meetings will discuus about the priorities and any dependencies and erros ( if any one faced similar error ) will keep it very short bcz team members can start working on to-do list.
 
 15) do you prefer individual role / working with the team?
 
@@ -91,7 +91,7 @@ confident with the work
 stick to the time lines.
 
 19) how do you justify you are the fit then other condidates.
-A) I'm a fast learner , i do lot of research in understading the requirements usage of right tolls.
+A) I'm a fast learner , i do lot of research in understading the requirements usage of right tools.
 
 i do have work experiance on many technologies will also integrate AI with my daily tasks to done my work very fast.
 

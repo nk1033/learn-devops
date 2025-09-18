@@ -201,3 +201,50 @@ to grant ACL permissions for authorization
 bin/kafka-acls.sh --authorizer-properties zookeeper.connect=localhost:2181 --add --allow-principal User:alice --producer --topic my-secure-topic
 
 bin/kafka-acls.sh --authorizer-properties zookeeper.connect=localhost:2181 --list --topic my-secure-topic
+
+
+what is authentication and authorization?
+A) Authentication is verifying who you are 🧍, while authorization determines what you are allowed to do 🔑. They are two separate but sequential steps in controlling access to a system.
+
+Authentication is verifying who you are 🧍, while authorization determines what you are allowed to do 🔑. They are two separate but sequential steps in controlling access to a system.
+
+Authentication
+Authentication is the process of confirming a user's identity. This is the first step in any secure access flow. It answers the question, "Are you who you say you are?" Common methods include:
+
+Something you know: Passwords or PINs.
+
+Something you have: A security token, a mobile device for a one-time code (OTP), or a physical key.
+
+Something you are: Biometrics like a fingerprint or facial scan.
+
+The result of successful authentication is a confirmed identity. For example, logging into your email account with a username and password authenticates you as the account owner.
+
+Authorization
+Authorization occurs after a user has been successfully authenticated. It's the process of deciding what specific resources or actions that user can access. It answers the question, "Now that we know who you are, what can you do?"
+
+Authorization is based on permissions or roles assigned to a user. For example:
+
+An "admin" role might have permission to delete a file.
+
+A "guest" role might only have permission to read a file.
+
+Even after you've authenticated into your email, you are not authorized to access someone else's inbox. Similarly, you may be authorized to view a company's sales report, but not to edit it.
+
+The Flow: Authentication → Authorization
+The two processes work together in a strict sequence to control access.
+
+Request for Access: A user tries to access a protected resource, like logging into a website.
+
+Authentication: The system asks the user for credentials (e.g., username and password). It then verifies these credentials against its records.
+
+Identity Confirmed: If the credentials match, the user's identity is authenticated. They are now considered a "known user."
+
+Authorization Check: The system looks up the user's assigned permissions or roles. It checks if the user is authorized to access the specific resource they are requesting.
+
+Access Granted or Denied:
+
+If the user has the required permissions, access is granted.
+
+If the user does not have the required permissions, access is denied, even though they successfully authenticated.
+
+

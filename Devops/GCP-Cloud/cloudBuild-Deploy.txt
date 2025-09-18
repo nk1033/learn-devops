@@ -1,0 +1,14 @@
+Deploy application to the gke cluster using cloud build and cloud deploy.
+
+what is cloud Deploy?
+Cloud deploy is a manged service that automates delivery of your applications to a series of target environments in a defined promotion sequence.
+
+when you want to deploy your updated application, you create a release, whose lifecycle is managed by delivery pipeline.
+
+cloud deploy uses scaffold file for rendering , deployment and verification.
+
+cloud Build
+***********
+add your repository to the gcp "source repository"
+create cloudbuild.yaml file which includes multiple steps of our task.
+

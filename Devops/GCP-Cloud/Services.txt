@@ -29,8 +29,15 @@ Load Balancing: In some deployment scenarios, especially when multiple instances
 
 ************************************************************************************************************************************
 
-Cloud run
-*********
+Cloud run & app Engine
+**********************
+
+Core Concepts
+App Engine is a fully managed Platform as a Service (PaaS). It's been around for a long time and is designed to abstract away the underlying infrastructure. You upload your code in a supported language (like Python, Java, or Node.js), and App Engine handles everything from scaling and load balancing to managing the operating system.
+
+Cloud Run is a newer, more flexible serverless platform built on the open-source Knative project. It's built for running stateless containers. This means you package your application and all its dependencies into a container image (like a Docker image), and Cloud Run runs it on demand.
+
+
 Cloud Run in Google Cloud Platform (GCP) is a fully managed serverless compute platform that enables you to run stateless containers that are invoked via HTTP requests or Pub/Sub events. It abstracts away all the underlying infrastructure management, allowing you to focus solely on building and deploying your applications.
 
 
@@ -162,7 +169,13 @@ You don't need any zookeeper for this setup. it is a managed service.
 
 so you can create kafka cluster as self managed into vm or gke cluster , to load data from kafka to bq you have use create another cluster called kafka connect and use bigquery sync connector.
 
-or you can create kafka in confluent cloud as manged service there no create any cluster it has inbuilt sync connectors to stream the data.
+or you can create kafka in confluent cloud as manged service, no need to create any cluster it has inbuilt sync connectors to stream the data.
+
+GCP PAM : - 
+***********
+Privilized access manager is a security layer to provide temporery access to the users for specifc resources.
+
+
 
 
 

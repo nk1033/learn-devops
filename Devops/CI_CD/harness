@@ -1,0 +1,28 @@
+Harness is a comprehensive, enterprise-grade software delivery platform that covers the entire software delivery lifecycle, including Continuous Integration (CI), Continuous Delivery (CD), GitOps, security testing, and cloud cost management. It is a commercial product that uses AI and automation to streamline and manage complex deployment pipelines across various environments, including Kubernetes, virtual machines, and serverless applications.
+
+Harness vs. ArgoCD: A Comparison
+The primary difference is their scope and focus.
+
+ArgoCD: ArgoCD is a specialized, open-source GitOps tool designed specifically for Kubernetes deployments. Its core function is to continuously monitor a Git repository as the "single source of truth" and automatically synchronize the state of Kubernetes clusters to match the configurations defined in Git. It excels at drift detection and ensuring the desired state of your applications in Kubernetes.
+
+Harness: While Harness has a GitOps module that can perform similar functions to ArgoCD, it is not limited to just GitOps or Kubernetes. It provides a full-featured CD pipeline engine that can orchestrate complex workflows, including approvals, verification steps, and deployments to a variety of targets beyond Kubernetes. This makes Harness a more all-encompassing solution for enterprise-level software delivery.
+
+
+In many cases, Harness and ArgoCD can even be used together, with Harness providing the broader CI/CD pipeline capabilities and using ArgoCD as the underlying GitOps engine to perform the final deployment to a Kubernetes cluster.
+
+
+
+To deploy your application in kubernetes cluster you need to install delegator from harness in kubernetes.
+
+A delegate is a agent and acts as a bridge, ensuring that the harness managers capabilities are readily available to you, And a delegate fecilitates seamless connectivity between you and the harness manager.
+
+
+Connectors Setup
+****************
+connectors are used to communicate with thirdparty tools.
+
+ex: github connector 
+
+Add Github personal access token
+********************************
+Deployments-->default_project-->Project setup---> secrets

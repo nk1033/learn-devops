@@ -1,0 +1,29 @@
+#Example .gitlab-ci.yml file:  
+image: hashicorp/terraform:latest  
+stages: - 
+- validate  
+- plan  
+- apply 
+
+before_script:   
+- terraform init
+
+validate:  
+  stage: validate   
+script:  
+- terraform validate 
+
+plan: 
+ stage: plan
+script:
+- terraform plan
+only :
+- merge_request
+
+apply : 
+ stage: apply
+ script:
+ - terraform apply-auto-approve
+ only: - 
+ - master 
+ 

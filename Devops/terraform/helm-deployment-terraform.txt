@@ -1,0 +1,67 @@
+You can deploy a Helm chart through Terraform using the official Helm provider and its helm_release resource. This approach allows you to manage the entire lifecycle of your Helm releases declaratively, just like any other infrastructure.
+
+
+Step 1: Configure the Providers
+You first need to configure both the Kubernetes and Helm providers in your Terraform file. The Helm provider uses the Kubernetes provider to connect to your cluster.
+
+Terraform
+
+# Configure the Kubernetes provider to connect to your cluster.
+# It automatically uses your local kubeconfig file by default.
+terraform {
+  required_providers {
+    helm = {
+      source = "hashicorp/helm"
+    }
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+    }
+  }
+}
+
+provider "kubernetes" {
+  # This uses your default ~/.kube/config file
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+Step 2: Define the Helm Release
+The core of the deployment is the helm_release resource. This resource represents a single Helm chart installation (a "release") and its configuration. You specify the chart you want to install and provide any custom values you need.
+
+
+Here's a full example that deploys the popular nginx-ingress chart from its official repository.
+
+Terraform
+
+# Define the Helm release for the NGINX Ingress Controller.
+resource "helm_release" "nginx" {
+  # A unique name for your release
+  name = "nginx-ingress-release"
+
+  # The repository where the chart is located.
+  repository = "https://kubernetes.github.io/ingress-nginx"
+
+  # The name of the chart.
+  chart = "ingress-nginx"
+
+  # The namespace to deploy the release into.
+  namespace = "ingress-nginx"
+
+  # Ensure the namespace is created before the release is deployed.
+  create_namespace = true
+
+  # Set custom values for the chart.
+  values = [
+    yamlencode({
+      controller = {
+        replicaCount = 2
+        service = {
+          type = "LoadBalancer"
+        }
+      }
+    })
+  ]
+}

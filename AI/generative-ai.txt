@@ -1,0 +1,31 @@
+Generative AI is a cutting edge technology , that allows machines to create and generate contect ranging from art to music, images , text amd more..
+
+ Sub fields of AI
+
+ AI - machinelearning -- Deep learning / reinfrocement learning.
+
+ Prompt engineering:
+ *******************
+ easiest way to use LLM'S
+ Prompts - text instructions or input queries to given the genAI model to get resent information.
+ Prompt Engineering : crafting and optimizing prompts for best results.
+
+
+ 
+ RAG's - Retrieval Augmented generation
+ *************************************
+
+ it helps to retrive information from external sources, leveraging LLM's 
+
+ AI Agents :
+ ***********
+ AI agents can make decisions and execute actions and adapt to new situations based on the data and instructions they receive.
+
+ LLM - Large Language Models :
+ ******************************
+
+ Language models can be devided into 2 types 
+
+ LLM'S - large
+ SLM's - Small 
+
